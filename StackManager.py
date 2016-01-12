@@ -2,6 +2,8 @@ import WifiStack
 import BleStack
 import logging
 import commands
+import time
+import json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -78,3 +80,18 @@ def context(device_id, device_ip_address, rssi, human_name):
     print "human_name: " + human_name
 
 xd = XdInstance(data, context)
+my_ip = xd.get_my_ip()
+payload = "testing"
+time.sleep(7)
+if my_ip == "192.168.2.192":
+    xd.send_data()
+    for dev_id in xd.id_dict:
+        if xd.id_dict[dev_id] == "192.168.2.55":
+            xd.send_data(dev_id, json.dumps(payload))
+
+if my_ip == "192.168.2.55":
+    xd.send_data()
+    for dev_id in xd.id_dict:
+        if xd.id_dict[dev_id] == "192.168.2.192":
+            xd.send_data(dev_id, json.dumps(payload))
+
