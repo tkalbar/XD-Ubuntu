@@ -54,7 +54,9 @@ class WifiClient(object):
             packed_hdr = struct.pack('=I', len(packed_msg))
 
             self._send(packed_hdr)
+            logger.info("Sent HDR")
             self._send(packed_msg)
+            logger.info("Sent MSG")
 
     def _send(self, msg):
         sent = 0
@@ -176,7 +178,8 @@ class WifiConnection(threading.Thread):
     def run(self):
         while self.active:
             try:
-                obj = self.read_json
+                obj = self.read_json()
+                logger.info("Read JSON")
                 self.process_callback(self.other_address, obj)
             except Exception as e:
                 logger.exception(e)
