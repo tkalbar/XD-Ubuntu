@@ -31,8 +31,9 @@ class XdInstance(object):
         self.server.start()
         self.scanner = BleStack.BleScanner(self._receive_context)
 
-        BleStack.BleScanner.set_beacon(self.get_my_ip())
-        BleStack.BleScanner.start_beacon()
+        self.scanner.set_beacon(self.get_my_ip())
+        self.scanner.start_beacon()
+        self.scanner.start_scan()
 
     @staticmethod
     def get_my_ip():
@@ -79,8 +80,3 @@ def context(device_id, device_ip_address, rssi, human_name):
     pass
 
 xd = XdInstance(data, context)
-
-
-
-
-
