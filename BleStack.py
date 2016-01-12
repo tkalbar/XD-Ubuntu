@@ -71,7 +71,7 @@ def set_beacon(ip_address):
     # print hexIpString
 
     cmd = "hcitool -i hci0 cmd 0x08 0x0008 04" + hex_ip_string
-    print cmd
+    # print cmd
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     proc.wait()
     # hcitool -i hci0 cmd 0x08 0x0008 04 C0 A8 02 37

@@ -156,6 +156,7 @@ class WifiConnection(threading.Thread):
                 obj = self.read_json()
                 logger.debug("Data: " + obj)
                 logger.info("Read JSON")
+                logger.debug("Other address: " + self.other_address)
                 self.process_callback(self.other_address, obj)
                 self.close()
                 break

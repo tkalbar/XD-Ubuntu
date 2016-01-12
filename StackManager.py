@@ -19,9 +19,13 @@ class XdInstance(object):
         self._init_stacks()
 
     def _receive_data(self, device_ip_address, obj):
-        for dev_id, ip in self.id_dict.iteritems():
+        logger.debug("Calling _receive_data")
+        for device_id, ip in self.id_dict.iteritems():
+            logger.debug("device_id: " + device_id)
+            logger.debug("ip: " + ip)
+            logger.debug("device_ip_address: " + device_ip_address)
             if ip == device_ip_address:
-                self.receive_data(dev_id, obj)
+                self.receive_data(device_id, obj)
 
     def _receive_context(self, device_id, device_ip_address, rssi, human_name):
         self.id_dict[device_id] = device_ip_address
@@ -69,8 +73,8 @@ class XdInstance(object):
         return "BLE"
 
 
-def data(dev_id, obj):
-    print "dev_id: " + dev_id
+def data(device_id, obj):
+    print "dev_id: " + device_id
     print "obj: " + obj
 
 
@@ -87,14 +91,14 @@ time.sleep(7)
 print "my_ip: " + my_ip
 while True:
     if my_ip == "192.168.2.192":
-        print "in 192"
+        # print "in 192"
         for dev_id in xd.id_dict:
             print "dict in 192: " + xd.id_dict[dev_id]
             if xd.id_dict[dev_id] == "192.168.2.55":
                 xd.send_data(dev_id, json.dumps(payload))
 
     if my_ip == "192.168.2.55":
-        print "in 55"
+        # print "in 55"
         for dev_id in xd.id_dict:
             print "dict in 55: " + xd.id_dict[dev_id]
             if xd.id_dict[dev_id] == "192.168.2.192":
