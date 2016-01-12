@@ -83,6 +83,7 @@ xd = XdInstance(data, context)
 my_ip = xd.get_my_ip()
 payload = "testing"
 time.sleep(7)
+print "my_ip: " + my_ip
 while True:
     if my_ip == "192.168.2.192":
         print "in 192"
