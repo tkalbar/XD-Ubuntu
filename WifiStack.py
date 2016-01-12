@@ -45,46 +45,15 @@ class WifiClient(object):
     def send(self, obj):
         self.send_json(obj)
 
-    def send_json(self, obj):
-        # msg = json.dumps(obj)
-        msg = obj
-        if self.socket:
-            frmt = "=%ds" % len(msg)
-            packed_msg = struct.pack(frmt, msg)
-            packed_hdr = struct.pack('=I', len(packed_msg))
-
-            self._send(packed_hdr)
-            logger.info("Sent HDR")
-            self._send(packed_msg)
-            logger.info("Sent MSG")
-
-    def _send(self, msg):
-        sent = 0
-        while sent < len(msg):
-            sent += self.conn.send(msg[sent:])
-
-    def msg_length(self):
-        d = self._read(4)
-        s = struct.unpack('=I', d)
-        return s[0]
-
-    def _read(self, size):
-        data = ''
-        while len(data) < size:
-            data_tmp = self.conn.recv(size-len(data))
-            data += data_tmp
-            if data_tmp == '':
-                raise RuntimeError("Socket Connection Severed")
-        return data
-
-    def read_json(self):
-        size = self.msg_length()
-        data = self._read(size)
-        frmt = "=%ds" % size
-        msg = struct.unpack(frmt, data)
-        # obj = json.loads(msg[0])
-        obj = msg
-        return obj
+    def _send(self, data):
+        # try:
+        #    serialized = json.dumps(data)
+        # except (TypeError, ValueError), e:
+        #    raise Exception('You can only send JSON-serializable data')
+        # send the length of the serialized data first
+        self.conn.send('%d\n' % len(data))
+        # send the serialized data
+        self.conn.sendall(data)
 
     def close(self):
         logger.debug("Closing Connection Socket")
@@ -148,28 +117,35 @@ class WifiConnection(threading.Thread):
         self.active = False
         self.process_callback = process_callback
 
-    def msg_length(self):
-        d = self._read(4)
-        s = struct.unpack('=I', d)
-        return s[0]
-
-    def _read(self, size):
-        data = ''
-        while len(data) < size:
-            data_tmp = self.conn.recv(size-len(data))
-            data += data_tmp
-            if data_tmp == '':
-                raise RuntimeError("Socket Connection Severed")
-        return data
-
     def read_json(self):
-        size = self.msg_length()
-        data = self._read(size)
-        frmt = "=%ds" % size
-        msg = struct.unpack(frmt, data)
-        # obj = json.loads(msg[0])
-        obj = msg
+        if not self.conn:
+            raise Exception('You have to connect first before receiving data')
+        data = self._recv()
+        # obj = json.loads(data[0])
+        obj = data
+        self.close()
         return obj
+
+    def _recv(self):
+        # read the length of the data, letter by letter until we reach EOL
+        length_str = ''
+        char = self.conn.recv(1)
+        while char != '\n':
+            length_str += char
+            char = self.conn.recv(1)
+        total = int(length_str)
+        # use a memoryview to receive the data chunk by chunk efficiently
+        view = memoryview(bytearray(total))
+        next_offset = 0
+        while total - next_offset > 0:
+            recv_size = socket.recv_into(view[next_offset:], total - next_offset)
+            next_offset += recv_size
+        return view.tobytes()
+        # try:
+        #    deserialized = json.loads(view.tobytes())
+        # except (TypeError, ValueError), e:
+        #    raise Exception('Data received was not in JSON format')
+        # return deserialized
 
     def close(self):
         logger.debug("Closing Connection Socket")
