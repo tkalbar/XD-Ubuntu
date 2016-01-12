@@ -46,18 +46,20 @@ class XdInstance(object):
         elif self.select_delivery_medium() == "BLE":
             logger.debug("Sending data over BLE medium (oops)")
 
-    def send_context(self, device_id, byteSeq):
-        if self.select_exchange_medium() == "BLE":
-            logger.debug("Sending context over BLE medium")
+    # def send_context(self, device_id, byteSeq):
+    #    if self.select_exchange_medium() == "BLE":
+    #        logger.debug("Sending context over BLE medium")
+    #
+    #    elif self.select_exchange_medium() == "WIFI":
+    #        logger.debug("Sending context over WIFI medium (oops)")
 
-        elif self.select_exchange_medium() == "WIFI":
-            logger.debug("Sending context over WIFI medium (oops)")
-
-    def select_delivery_medium(self):
+    @staticmethod
+    def select_delivery_medium():
         # For this port, only Wifi and Ble are available
         return "WIFI"
 
-    def select_exchange_medium(self):
+    @staticmethod
+    def select_exchange_medium():
         # For this port, only Wifi and Ble are available
         return "BLE"
 
@@ -75,7 +77,7 @@ def context(device_id, device_ip_address, rssi, human_name):
     print "human_name " + human_name
     pass
 
-xd = XdInstance(data,context)
+xd = XdInstance(data, context)
 
 
 

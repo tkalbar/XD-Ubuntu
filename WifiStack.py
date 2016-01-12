@@ -49,11 +49,11 @@ class WifiClient(object):
         msg = obj
         if self.socket:
             frmt = "=%ds" % len(msg)
-            packedMsg = struct.pack(frmt, msg)
-            packedHdr = struct.pack('=I', len(packedMsg))
+            packed_msg = struct.pack(frmt, msg)
+            packed_hdr = struct.pack('=I', len(packed_msg))
 
-            self._send(packedHdr)
-            self._send(packedMsg)
+            self._send(packed_hdr)
+            self._send(packed_msg)
 
     def _send(self, msg):
         sent = 0
@@ -68,9 +68,9 @@ class WifiClient(object):
     def _read(self, size):
         data = ''
         while len(data) < size:
-            dataTmp = self.conn.recv(size-len(data))
-            data += dataTmp
-            if dataTmp == '':
+            data_tmp = self.conn.recv(size-len(data))
+            data += data_tmp
+            if data_tmp == '':
                 raise RuntimeError("Socket Connection Severed")
         return data
 
@@ -113,7 +113,7 @@ class WifiServer(threading.Thread):
 
         self.conn, self.other_address = self._accept()  # TODO: add timeout eventually
 
-        logger.debug("connection accepted, conn socket (%s,%d)" % (addr[0], addr[1]))
+        logger.debug("connection accepted, conn socket (%s,%d)" % (self.other_address[0], self.other_address[1]))
 
     def run(self):
         while self.active:
@@ -153,9 +153,9 @@ class WifiConnection(threading.Thread):
     def _read(self, size):
         data = ''
         while len(data) < size:
-            dataTmp = self.conn.recv(size-len(data))
-            data += dataTmp
-            if dataTmp == '':
+            data_tmp = self.conn.recv(size-len(data))
+            data += data_tmp
+            if data_tmp == '':
                 raise RuntimeError("Socket Connection Severed")
         return data
 

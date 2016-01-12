@@ -2,22 +2,20 @@ import subprocess
 import itertools
 import socket
 
+
 class BleScanner:
-    def __init__(self, process_beacon, my_ip):
+    def __init__(self, process_beacon):
         self.process_beacon = process_beacon
-        self.my_ip = my_ip
 
     def start_scan(self):
 
         # hcitool lescan --duplicates
         # hcidump --raw
         cmd_scan = "hcitool lescan --duplicates"
-        proc = subprocess.Popen(cmd_scan, shell=True, stdout=subprocess.PIPE)
+        subprocess.Popen(cmd_scan, shell=True, stdout=subprocess.PIPE)
 
         cmd_dump = "hcidump --raw"
         proc = subprocess.Popen(cmd_dump, shell=True, stdout=subprocess.PIPE)
-
-        proc = subprocess.Popen("ls -la", shell=True, stdout=subprocess.PIPE)
 
         while True:
             line = proc.stdout.readline()
@@ -35,11 +33,11 @@ class BleScanner:
                         print line.rstrip()
                         name_tokens = name_line.split()
                         if name_tokens[0] == '>' and tokens[6] == '04':
-                            list = []
-                            for token in itertools.islice(name_tokens , 17, None):
-                                list.append(token)
-                            del list[-1]
-                            for token in list:
+                            token_list = []
+                            for token in itertools.islice(name_tokens, 17, None):
+                                token_list.append(token)
+                            del token_list[-1]
+                            for token in token_list:
                                 human_name += token
                     self.process_beacon(mac_address, ip_address, rssi, human_name)
 
@@ -50,8 +48,8 @@ class BleScanner:
 
         hex_ip_string = ''
         for token in ip_tokens:
-            hex = "%0.2X" % int(token)
-            hex_ip_string += " " + hex
+            hex_repr = "%0.2X" % int(token)
+            hex_ip_string += " " + hex_repr
             # print hex
         # print hexIpString
 
