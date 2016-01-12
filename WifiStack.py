@@ -93,6 +93,7 @@ class WifiServer(threading.Thread):
         threading.Thread.__init__(self)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn = self.socket
+        self._bind()
         self.port = port
         self.active = False
         self.process_callback = process_callback
@@ -108,6 +109,8 @@ class WifiServer(threading.Thread):
         return self.socket.accept()
 
     def accept_conn(self):
+        self._listen()
+
         self.conn, self.other_address = self._accept()  # TODO: add timeout eventually
 
         logger.debug("connection accepted, conn socket (%s,%d)" % (addr[0], addr[1]))
