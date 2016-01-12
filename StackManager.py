@@ -82,7 +82,7 @@ def context(device_id, device_ip_address, rssi, human_name):
 
 xd = XdInstance(data, context)
 my_ip = xd.get_my_ip()
-payload = "testing"
+payload = {"c": 0, "b": 0, "a": 0}
 time.sleep(7)
 print "my_ip: " + my_ip
 while True:
