@@ -72,7 +72,8 @@ class XdInstance(object):
         # For this port, only Wifi and Ble are available
         return "BLE"
 
-
+while True:
+    time.sleep(2)
 '''def data(device_id, obj):
     print "dev_id: " + device_id
     print "obj: " + obj
