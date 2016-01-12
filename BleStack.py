@@ -37,14 +37,14 @@ class BleScanner:
                             token_list = []
                             for token in itertools.islice(name_tokens, 17, None):
                                 token_list.append(token)
-                            if int(name_tokens[14]) > 6:
+                            if int(name_tokens[14], 16) > 6:
                                 cnt_in_nextline = int(name_tokens[14], 16) - 6
                                 name_line = proc.stdout.readline()
                                 print name_line.rstrip()
                                 name_tokens = name_line.split()
                                 for token in itertools.islice(name_tokens, None, cnt_in_nextline):
                                     token_list.append(token)
-                            elif int(name_tokens[14]) < 6:
+                            elif int(name_tokens[14], 16) < 6:
                                 del token_list[-1]
                             for token in token_list:
                                 human_name += chr(int(token, 16))
