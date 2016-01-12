@@ -3,7 +3,7 @@ import logging
 import time
 import struct
 import threading
-
+import json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -46,17 +46,17 @@ class WifiClient(object):
         self._send(obj)
 
     def _send(self, data):
-        # try:
-        #    serialized = json.dumps(data)
-        # except (TypeError, ValueError), e:
-        #    raise Exception('You can only send JSON-serializable data')
+        try:
+            serialized = json.dumps(data)
+        except (TypeError, ValueError), e:
+            raise Exception('You can only send JSON-serializable data')
         # send the length of the serialized data first
-        self.conn.send('%d\n' % len(data))
+        self.conn.send('%d\n' % len(serialized))
         # send the serialized data
-        self.conn.sendall(data)
+        self.conn.sendall(serialized)
 
     def close(self):
-        logger.debug("Closing Connection Socket")
+        logger.debug("Client: Closing Connection Socket")
         self.conn.close()  # Careful, might need to close socket separately
 
 
@@ -105,7 +105,7 @@ class WifiServer(threading.Thread):
         self.active = False
 
     def close(self):
-        logger.debug("Closing Connection Socket")
+        logger.debug("Server: Closing Connection Socket")
         self.conn.close()  # Careful, might need to close socket separately
 
 
@@ -121,10 +121,8 @@ class WifiConnection(threading.Thread):
         if not self.conn:
             raise Exception('You have to connect first before receiving data')
         data = self._recv()
-        # obj = json.loads(data[0])
-        obj = data
         self.close()
-        return obj
+        return data
 
     def _recv(self):
         # read the length of the data, letter by letter until we reach EOL
@@ -140,15 +138,15 @@ class WifiConnection(threading.Thread):
         while total - next_offset > 0:
             recv_size = self.conn.recv_into(view[next_offset:], total - next_offset)
             next_offset += recv_size
-        return view.tobytes()
-        # try:
-        #    deserialized = json.loads(view.tobytes())
-        # except (TypeError, ValueError), e:
-        #    raise Exception('Data received was not in JSON format')
-        # return deserialized
+        try:
+            deserialized = json.loads(view.tobytes())
+        except (TypeError, ValueError), e:
+            raise Exception('Data received was not in JSON format')
+        logger.debug("Finished receiving data")
+        return deserialized
 
     def close(self):
-        logger.debug("Closing Connection Socket")
+        logger.debug("Connection: Closing Connection Socket")
         self.conn.close()  # Careful, might need to close socket separately
 
     def run(self):
