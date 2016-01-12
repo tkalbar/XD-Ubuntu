@@ -38,7 +38,7 @@ class BleScanner:
                             for token in itertools.islice(name_tokens, 17, None):
                                 token_list.append(token)
                             if int(name_tokens[14]) > 6:
-                                cnt_in_nextline = int(name_tokens[14]) - 6
+                                cnt_in_nextline = int(name_tokens[14], 16) - 6
                                 name_line = proc.stdout.readline()
                                 print name_line.rstrip()
                                 name_tokens = name_line.split()
