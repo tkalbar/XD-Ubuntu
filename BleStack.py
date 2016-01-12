@@ -22,7 +22,7 @@ class BleScanner(threading.Thread):
         while self.active:
             line = proc.stdout.readline()
             if line != '':
-                print line.rstrip()
+                # print line.rstrip()
                 tokens = line.split()
                 if tokens[0] == '>' and tokens[6] == '00' and tokens[14] == '04':
                     mac_address = tokens[13]+":"+tokens[12]+":"+tokens[11]+":"+tokens[10]+":"+tokens[9]+":"+tokens[8]
