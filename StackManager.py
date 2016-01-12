@@ -83,17 +83,20 @@ xd = XdInstance(data, context)
 my_ip = xd.get_my_ip()
 payload = "testing"
 time.sleep(7)
-if my_ip == "192.168.2.192":
-    print "in 192"
-    for dev_id in xd.id_dict:
-        print "dict in 192: " + xd.id_dict[dev_id]
-        if xd.id_dict[dev_id] == "192.168.2.55":
-            xd.send_data(dev_id, json.dumps(payload))
+while True:
+    if my_ip == "192.168.2.192":
+        print "in 192"
+        for dev_id in xd.id_dict:
+            print "dict in 192: " + xd.id_dict[dev_id]
+            if xd.id_dict[dev_id] == "192.168.2.55":
+                xd.send_data(dev_id, json.dumps(payload))
 
-if my_ip == "192.168.2.55":
-    print "in 55"
-    for dev_id in xd.id_dict:
-        print "dict in 55: " + xd.id_dict[dev_id]
-        if xd.id_dict[dev_id] == "192.168.2.192":
-            xd.send_data(dev_id, json.dumps(payload))
+    if my_ip == "192.168.2.55":
+        print "in 55"
+        for dev_id in xd.id_dict:
+            print "dict in 55: " + xd.id_dict[dev_id]
+            if xd.id_dict[dev_id] == "192.168.2.192":
+                xd.send_data(dev_id, json.dumps(payload))
+
+    time.sleep(2)
 
