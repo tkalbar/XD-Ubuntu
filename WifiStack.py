@@ -17,6 +17,10 @@ class WifiClient(object):
         self.conn = self.socket
         self.address = address
         self.port = port
+        self.my_ip = ''
+
+    def get_my_ip(self):
+        return self.my_ip
 
     def get_address(self):
         return self.address
@@ -27,11 +31,12 @@ class WifiClient(object):
     def connect(self):
         for i in range(5):
             try:
-                self.socket.connect( (self.address, self.port) )
+                self.socket.connect((self.address, self.port))
             except socket.error as msg:
                 logger.error("Socket Connection Error: %s" % msg)
                 time.sleep(2)
                 continue
+            self.my_ip = self.socket.getsockname()[0]
             logger.info("Socket Connected")
             return True
         return False
@@ -84,12 +89,14 @@ class WifiClient(object):
 
 
 class WifiServer(threading.Thread):
-    def __init__(self, port=5419):
+    def __init__(self, process_callback, port=5419):
         threading.Thread.__init__(self)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn = self.socket
         self.port = port
         self.active = False
+        self.process_callback = process_callback
+        self.other_address = ''
 
     def _bind(self):
         self.socket.bind(('', self.port))
@@ -101,7 +108,7 @@ class WifiServer(threading.Thread):
         return self.socket.accept()
 
     def accept_conn(self):
-        self.conn, addr = self._accept()  # TODO: add timeout eventually
+        self.conn, self.other_address = self._accept()  # TODO: add timeout eventually
 
         logger.debug("connection accepted, conn socket (%s,%d)" % (addr[0], addr[1]))
 
@@ -109,7 +116,8 @@ class WifiServer(threading.Thread):
         while self.active:
             try:
                 self.accept_conn()
-                wifiConn = WifiConnection(self.conn)
+                wifi_conn = WifiConnection(self.conn, self.other_address, self.process_callback)
+                wifi_conn.start()
             except Exception as e:
                 logger.exception(e)
                 continue
@@ -127,14 +135,12 @@ class WifiServer(threading.Thread):
 
 
 class WifiConnection(threading.Thread):
-    def __init__(self, conn):
+    def __init__(self, conn, other_address, process_callback):
         threading.Thread.__init__(self)
         self.conn = conn
+        self.other_address = other_address
         self.active = False
-
-    def process_message(self, obj):
-        logger.debug("Dummy Process")
-        logger.debug(obj)
+        self.process_callback = process_callback
 
     def msg_length(self):
         d = self._read(4)
@@ -165,13 +171,13 @@ class WifiConnection(threading.Thread):
 
     def run(self):
         while self.active:
-                try:
-                    obj = self.read_json
-                    self.process_message(obj)
-                except Exception as e:
-                    logger.exception(e)
-                    self.close()
-                    break
+            try:
+                obj = self.read_json
+                self.process_callback(self.other_address, obj)
+            except Exception as e:
+                logger.exception(e)
+                self.close()
+                break
 
     def start(self):
         self.active = True

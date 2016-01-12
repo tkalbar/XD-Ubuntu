@@ -1,62 +1,68 @@
-import enum
 import WifiStack
+import BleStack
 import logging
+import commands
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 FORMAT = '[%(asctime)-15s][%(levelname)s][%(funcName)s] %(message)s'
 logging.basicConfig(format=FORMAT)
 
-# Send context
 
-# Send data
+class XdInstance(object):
+    def __init__(self, receive_data, receive_context):
+        self.receive_data = receive_data
+        self.receive_context = receive_context
+        self._init_stacks()
+        self.id_dict = {}
 
-id_dict = {}
+    def _receive_data(self, device_ip_address, obj):
+        for dev_id, ip in self.id_dict.iteritems():
+            if ip == device_ip_address:
+                self.receive_data(dev_id, obj)
+
+    def _receive_context(self, device_id, device_ip_address, rssi, human_name):
+        self.id_dict[device_id] = device_ip_address
+        self.receive_context
+
+    def _init_stacks(self):
+        self.server = WifiStack.WifiServer(self._receive_data)
+        self.server.start()
+        self.scanner = BleStack.BleScanner(self._receive_context)
+
+        BleStack.BleScanner.set_beacon(self.get_my_ip())
+        BleStack.BleScanner.start_beacon()
+
+    @staticmethod
+    def get_my_ip():
+        return commands.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
+
+    def send_data(self, device_id, obj):
+        if self.select_delivery_medium() == "WIFI":
+            logger.debug("Sending data over WIFI medium")
+            if self.id_dict[device_id] != '':
+                client = WifiStack.WifiClient(address=self.id_dict[device_id])
+                client.send(obj)
+        elif self.select_delivery_medium() == "BLE":
+            logger.debug("Sending data over BLE medium (oops)")
+
+    def send_context(self, device_id, byteSeq):
+        if self.select_exchange_medium() == "BLE":
+            logger.debug("Sending context over BLE medium")
+
+        elif self.select_exchange_medium() == "WIFI":
+            logger.debug("Sending context over WIFI medium (oops)")
+
+    def select_delivery_medium(self):
+        # For this port, only Wifi and Ble are available
+        return "WIFI"
+
+    def select_exchange_medium(self):
+        # For this port, only Wifi and Ble are available
+        return "BLE"
 
 
-class Medium(Enum):
-    def __str__(self):
-        return str(self.value)
-    WIFI = 1
-    BLE = 2
 
 
-def receive_data(deviceId, obj):
-    logger.debug("Dummy receive data")
 
 
-def send_data(device_id, obj):
-    if select_delivery_medium()==Medium.WIFI:
-        logger.debug("Sending data over WIFI medium")
-        if id_dict[device_id] != '':
-            client = WifiStack.WifiClient(address=id_dict[device_id])
-            client.send(obj)
-    elif select_delivery_medium()==Medium.BLE:
-        logger.debug("Sending data over BLE medium (oops)")
-
-
-def send_context(device_id, byteSeq):
-    if select_exchange_medium()==Medium.BLE:
-        logger.debug("Sending context over BLE medium")
-
-    elif select_exchange_medium()==Medium.BLE:
-        logger.debug("Sending context over WIFI medium (oops)")
-
-
-def select_delivery_medium():
-    # For this port, only Wifi and Ble are available
-    return Medium.WIFI
-
-
-def select_exchange_medium():
-    # For this port, only Wifi and Ble are available
-    return Medium.BLE
-
-
-def _receive_data(deviceId, obj):
-        server = WifiStack.WifiServer(address=)
-        receive_data(obj)
-
-
-def _receive_context(deviceId, ip):
-    id_dict[deviceId] = ip
