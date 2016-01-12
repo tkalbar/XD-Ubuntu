@@ -18,6 +18,7 @@ class WifiClient(object):
         self.address = address
         self.port = port
         self.my_ip = ''
+        self.connect()
 
     def get_my_ip(self):
         return self.my_ip
