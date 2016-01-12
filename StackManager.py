@@ -27,6 +27,7 @@ class XdInstance(object):
 
     def _init_stacks(self):
         self.server = WifiStack.WifiServer(self._receive_data)
+        self.server.daemon = True
         self.server.start()
         self.scanner = BleStack.BleScanner(self._receive_context)
 
