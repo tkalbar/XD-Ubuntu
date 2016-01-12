@@ -93,11 +93,11 @@ class WifiServer(threading.Thread):
         threading.Thread.__init__(self)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn = self.socket
-        self._bind()
         self.port = port
         self.active = False
         self.process_callback = process_callback
         self.other_address = ''
+        self._bind()
 
     def _bind(self):
         self.socket.bind(('', self.port))
