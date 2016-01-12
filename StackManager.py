@@ -73,7 +73,7 @@ class XdInstance(object):
         return "BLE"
 
 
-def data(device_id, obj):
+'''def data(device_id, obj):
     print "dev_id: " + device_id
     print "obj: " + obj
 
@@ -104,5 +104,5 @@ while True:
             if xd.id_dict[dev_id] == "192.168.3.104":
                 xd.send_data(dev_id, json.dumps(payload))
 
-    time.sleep(2)
+    time.sleep(2) '''
 
