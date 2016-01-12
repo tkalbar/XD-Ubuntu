@@ -13,8 +13,8 @@ class XdInstance(object):
     def __init__(self, receive_data, receive_context):
         self.receive_data = receive_data
         self.receive_context = receive_context
-        self._init_stacks()
         self.id_dict = {}
+        self._init_stacks()
 
     def _receive_data(self, device_ip_address, obj):
         for dev_id, ip in self.id_dict.iteritems():
