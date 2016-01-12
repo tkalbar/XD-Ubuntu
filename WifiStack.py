@@ -46,14 +46,14 @@ class WifiClient(object):
         self._send(obj)
 
     def _send(self, data):
-        try:
-            serialized = json.dumps(data)
-        except (TypeError, ValueError), e:
-            raise Exception('You can only send JSON-serializable data')
+        # try:
+        #    serialized = json.dumps(data)
+        # except (TypeError, ValueError), e:
+        #    raise Exception('You can only send JSON-serializable data')
         # send the length of the serialized data first
-        self.conn.send('%d\n' % len(serialized))
+        self.conn.send('%d\n' % len(data))
         # send the serialized data
-        self.conn.sendall(serialized)
+        self.conn.sendall(data)
 
     def close(self):
         logger.debug("Client: Closing Connection Socket")
@@ -138,12 +138,13 @@ class WifiConnection(threading.Thread):
         while total - next_offset > 0:
             recv_size = self.conn.recv_into(view[next_offset:], total - next_offset)
             next_offset += recv_size
-        try:
-            deserialized = json.loads(view.tobytes())
-        except (TypeError, ValueError), e:
-            raise Exception('Data received was not in JSON format')
+        # try:
+        #    deserialized = json.loads(view.tobytes())
+        # except (TypeError, ValueError), e:
+        #     raise Exception('Data received was not in JSON format')
         logger.debug("Finished receiving data")
-        return deserialized
+        # return deserialized
+        return view.tobytes()
 
     def close(self):
         logger.debug("Connection: Closing Connection Socket")
