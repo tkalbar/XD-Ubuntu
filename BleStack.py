@@ -30,9 +30,9 @@ class BleScanner:
                     human_name = ''
                     name_line = proc.stdout.readline()
                     if name_line != '':
-                        print line.rstrip()
+                        print name_line.rstrip()
                         name_tokens = name_line.split()
-                        if name_tokens[0] == '>' and tokens[6] == '04':
+                        if name_tokens[0] == '>' and name_tokens[6] == '04':
                             token_list = []
                             for token in itertools.islice(name_tokens, 17, None):
                                 token_list.append(token)

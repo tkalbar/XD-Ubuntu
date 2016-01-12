@@ -76,7 +76,7 @@ def context(device_id, device_ip_address, rssi, human_name):
     print "device_id: " + device_id
     print "device_ip_address: " + device_ip_address
     print "rssi: " + rssi
-    print "human_name " + human_name
+    print "human_name: " + human_name
     pass
 
 xd = XdInstance(data, context)
