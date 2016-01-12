@@ -31,11 +31,12 @@ class XdInstance(object):
         self.server = WifiStack.WifiServer(self._receive_data)
         self.server.daemon = True
         self.server.start()
-        self.scanner = BleStack.BleScanner(self._receive_context)
 
-        self.scanner.set_beacon(self.get_my_ip())
-        self.scanner.start_beacon()
-        self.scanner.start_scan()
+        BleStack.set_beacon(self.get_my_ip())
+        BleStack.start_beacon()
+        self.scanner = BleStack.BleScanner(self._receive_context)
+        self.scanner.daemon = True
+        self.scanner.start()
 
     @staticmethod
     def get_my_ip():
