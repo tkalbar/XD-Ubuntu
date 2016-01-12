@@ -43,7 +43,7 @@ class WifiClient(object):
         return False
 
     def send(self, obj):
-        self.send_json(obj)
+        self._send(obj)
 
     def _send(self, data):
         # try:
@@ -138,7 +138,7 @@ class WifiConnection(threading.Thread):
         view = memoryview(bytearray(total))
         next_offset = 0
         while total - next_offset > 0:
-            recv_size = socket.recv_into(view[next_offset:], total - next_offset)
+            recv_size = self.conn.recv_into(view[next_offset:], total - next_offset)
             next_offset += recv_size
         return view.tobytes()
         # try:
