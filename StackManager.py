@@ -69,14 +69,12 @@ class XdInstance(object):
 def data(dev_id, obj):
     print "dev_id: " + dev_id
     print "obj: " + obj
-    pass
 
 
 def context(device_id, device_ip_address, rssi, human_name):
     print "device_id: " + device_id
     print "device_ip_address: " + device_ip_address
-    print "rssi: " + rssi
+    print "rssi: " + str(rssi)
     print "human_name: " + human_name
-    pass
 
 xd = XdInstance(data, context)
