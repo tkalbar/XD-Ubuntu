@@ -23,7 +23,7 @@ class XdInstance(object):
 
     def _receive_context(self, device_id, device_ip_address, rssi, human_name):
         self.id_dict[device_id] = device_ip_address
-        self.receive_context
+        self.receive_context(device_id, device_ip_address, rssi, human_name)
 
     def _init_stacks(self):
         self.server = WifiStack.WifiServer(self._receive_data)
@@ -61,6 +61,21 @@ class XdInstance(object):
         # For this port, only Wifi and Ble are available
         return "BLE"
 
+
+def data(dev_id, obj):
+    print "dev_id: " + dev_id
+    print "obj: " + obj
+    pass
+
+
+def context(device_id, device_ip_address, rssi, human_name):
+    print "device_id: " + device_id
+    print "device_ip_address: " + device_ip_address
+    print "rssi: " + rssi
+    print "human_name " + human_name
+    pass
+
+xd = XdInstance(data,context)
 
 
 
