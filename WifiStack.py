@@ -121,7 +121,7 @@ class WifiConnection(threading.Thread):
         if not self.conn:
             raise Exception('You have to connect first before receiving data')
         data = self._recv()
-        self.close()
+        # self.close()
         return data
 
     def _recv(self):
@@ -153,8 +153,11 @@ class WifiConnection(threading.Thread):
         while self.active:
             try:
                 obj = self.read_json()
+                logger.debug("Data: " + obj)
                 logger.info("Read JSON")
                 self.process_callback(self.other_address, obj)
+                self.close()
+                break
             except Exception as e:
                 logger.exception(e)
                 self.close()
