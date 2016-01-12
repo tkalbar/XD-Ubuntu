@@ -25,8 +25,9 @@ class BleScanner:
                 tokens = line.split()
                 if tokens[0] == '>' and tokens[6] == '00' and tokens[14] == '04':
                     mac_address = tokens[13]+":"+tokens[12]+":"+tokens[11]+":"+tokens[10]+":"+tokens[9]+":"+tokens[8]
-                    ip_address = tokens[15]+"."+tokens[16]+"."+tokens[17]+"."+tokens[18]
-                    rssi = tokens[19]
+                    ip_address = str(int(tokens[15], 16)) + "."+str(int(tokens[16], 16))\
+                        + "." + str(int(tokens[17], 16)) + "."+str(int(tokens[18], 16))
+                    rssi = int(tokens[19], 16)-256
                     human_name = ''
                     name_line = proc.stdout.readline()
                     if name_line != '':
@@ -38,7 +39,7 @@ class BleScanner:
                                 token_list.append(token)
                             del token_list[-1]
                             for token in token_list:
-                                human_name += token
+                                human_name += chr(int(token, 16))
                     self.process_beacon(mac_address, ip_address, rssi, human_name)
 
     @staticmethod
