@@ -90,18 +90,18 @@ payload = {"c": 0, "b": 0, "a": 0}
 time.sleep(7)
 print "my_ip: " + my_ip
 while True:
-    if my_ip == "192.168.2.192":
+    if my_ip == "192.168.3.104":
         # print "in 192"
         for dev_id in xd.id_dict:
-            print "dict in 192: " + xd.id_dict[dev_id]
-            if xd.id_dict[dev_id] == "192.168.2.55":
+            print "dict in 104: " + xd.id_dict[dev_id]
+            if xd.id_dict[dev_id] == "192.168.3.106":
                 xd.send_data(dev_id, json.dumps(payload))
 
-    if my_ip == "192.168.2.55":
+    if my_ip == "192.168.3.106":
         # print "in 55"
         for dev_id in xd.id_dict:
-            print "dict in 55: " + xd.id_dict[dev_id]
-            if xd.id_dict[dev_id] == "192.168.2.192":
+            print "dict in 106: " + xd.id_dict[dev_id]
+            if xd.id_dict[dev_id] == "192.168.3.104":
                 xd.send_data(dev_id, json.dumps(payload))
 
     time.sleep(2)
