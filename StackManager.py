@@ -94,13 +94,13 @@ while True:
         # print "in 192"
         for dev_id in xd.id_dict:
             print "dict in 104: " + xd.id_dict[dev_id]
-            if xd.id_dict[dev_id] == "192.168.3.106":
+            if xd.id_dict[dev_id] == "192.168.3.108":
                 xd.send_data(dev_id, json.dumps(payload))
 
-    if my_ip == "192.168.3.106":
+    if my_ip == "192.168.3.108":
         # print "in 55"
         for dev_id in xd.id_dict:
-            print "dict in 106: " + xd.id_dict[dev_id]
+            print "dict in 108: " + xd.id_dict[dev_id]
             if xd.id_dict[dev_id] == "192.168.3.104":
                 xd.send_data(dev_id, json.dumps(payload))
 
