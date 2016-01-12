@@ -50,6 +50,11 @@ class BleScanner(threading.Thread):
                             for token in token_list:
                                 human_name += chr(int(token, 16))
                     self.process_beacon(mac_address, ip_address, rssi, human_name)
+                elif tokens[0] == '>' and tokens[14] == '03':
+                    mac_address = tokens[13]+":"+tokens[12]+":"+tokens[11]+":"+tokens[10]+":"+tokens[9]+":"+tokens[8]
+                    rssi = int(tokens[18], 16)-256
+                    self.process_beacon(mac_address, '', rssi, "SensorTag")
+
 
     def start(self):
         self.active = True
